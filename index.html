@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASRA 22-26</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- STICKY HEADER -->
+<header id="header">
+  <div class="header-inner">
+    <div class="header-left">
+      <span class="header-logo">🎓</span>
+      <div>
+        <h1 class="header-title">ASRA</h1>
+        <p class="header-sub">CSE Batch 2022–2026 · Avanthi's</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <button id="musicBtn" class="icon-btn" title="Toggle Music">♪</button>
+    </div>
+  </div>
+</header>
+
+<!-- AUDIO -->
+<audio id="bgMusic" loop>
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3" type="audio/mpeg" />
+</audio>
+
+<!-- HERO BANNER -->
+<div class="hero-banner">
+  <img src="images/WhatsApp Image 2026-03-30 at 8.46.07 PM.jpeg" alt="ASRA Batch" class="hero-img" />
+  <div class="hero-overlay">
+    <h2 class="hero-heading">Our BTech Journey ❤️</h2>
+    <p class="hero-tagline">Four years. One family. Infinite memories.</p>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+  <!-- NAV TABS -->
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-tab="students">👨‍💻 Students</button>
+    <button class="tab" data-tab="gallery">📸 Gallery</button>
+    <button class="tab" data-tab="memories">💫 Memories</button>
+    <button class="tab" data-tab="farewell">❤️ Farewell</button>
+  </div>
+
+  <!-- ===== STUDENTS TAB ===== -->
+  <div class="tab-content active" id="tab-students">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">CSE Students</h2>
+        <p class="section-sub">Branch Code 5 · Class of 2026</p>
+      </div>
+      <div class="count-pill" id="countBadge">45 students</div>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="controls">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search by name..." autocomplete="off" />
+      </div>
+    </div>
+
+    <div class="students-grid" id="studentsGrid"></div>
+    <div class="empty-state" id="noResults" style="display:none">
+      <p style="font-size:2rem">🔍</p>
+      <p>No students found</p>
+    </div>
+  </div>
+
+  <!-- ===== GALLERY TAB ===== -->
+  <div class="tab-content" id="tab-gallery">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Our Gallery</h2>
+        <p class="section-sub">Batch photos + add your own memories</p>
+      </div>
+    </div>
+
+    <!-- Pre-loaded batch photos -->
+    <p class="subsection-label">📌 Batch Photos</p>
+    <div class="gallery-grid" id="batchGrid">
+      <div class="gallery-tile" onclick="openMemoryPhoto(0)">
+        <img src="images/WhatsApp Image 2026-03-30 at 8.46.07 PM.jpeg" alt="Avanthi's College" loading="lazy" />
+        <div class="gallery-tile-caption">Avanthi's College — Our Batch ❤️</div>
+      </div>
+      <div class="gallery-tile" onclick="openMemoryPhoto(1)">
+        <img src="images/WhatsApp Image 2026-03-30 at 8.46.07 PM (1).jpeg" alt="Trip Vibes" loading="lazy" />
+        <div class="gallery-tile-caption">Trip Vibes 🔥</div>
+      </div>
+      <div class="gallery-tile" onclick="openMemoryPhoto(2)">
+        <img src="images/WhatsApp Image 2026-03-30 at 8.46.08 PM.jpeg" alt="Night Out" loading="lazy" />
+        <div class="gallery-tile-caption">Night Out 🌙</div>
+      </div>
+      <div class="gallery-tile" onclick="openMemoryPhoto(3)">
+        <img src="images/WhatsApp Image 2026-03-30 at 8.46.08 PM (1).jpeg" alt="Campus Days" loading="lazy" />
+        <div class="gallery-tile-caption">Campus Days ☀️</div>
+      </div>
+    </div>
+
+    <!-- User Upload -->
+    <p class="subsection-label" style="margin-top:2rem">➕ Add Your Photos & Videos</p>
+    <div class="upload-bar">
+      <button class="upload-btn" id="uploadPhotoBtn">📸 Photos</button>
+      <button class="upload-btn" id="uploadVideoBtn">🎬 Videos</button>
+      <button class="upload-btn" id="uploadUrlBtn">� YouTube / URL</button>
+      <input type="file" id="fileInput" accept="image/*,video/*" multiple hidden />
+    </div>
+
+    <div class="url-row" id="urlInputWrap" style="display:none">
+      <input type="text" id="urlInput" placeholder="Paste YouTube or image URL..." />
+      <input type="text" id="urlCaption" placeholder="Caption (optional)" />
+      <button id="urlSubmit" class="upload-btn accent">Add</button>
+      <button id="urlCancel" class="upload-btn">Cancel</button>
+    </div>
+
+    <div class="gallery-grid" id="galleryGrid"></div>
+    <div class="empty-state" id="galleryEmpty">
+      <p style="font-size:2rem">🌟</p>
+      <p>No uploads yet — be the first to share!</p>
+    </div>
+  </div>
+
+  <!-- ===== MEMORIES TAB ===== -->
+  <div class="tab-content" id="tab-memories">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Memories</h2>
+        <p class="section-sub">Four years of moments we'll never forget</p>
+      </div>
+    </div>
+    <div class="memories-grid">
+      <div class="memory-card"><div class="memory-icon">🎓</div><h3>First Day</h3><p>New city. New faces. Hostel rooms that smelled like instant noodles and anxiety. We had no idea what we were doing — and that was the best part.</p></div>
+      <div class="memory-card"><div class="memory-icon">💻</div><h3>Lab Sessions</h3><p>Debugging at midnight. Segmentation faults. That one program that finally compiled after 3 hours. The joy was unmatched.</p></div>
+      <div class="memory-card"><div class="memory-icon">🏆</div><h3>Hackathons</h3><p>36 hours of no sleep, bad coffee, and brilliant ideas. We didn't always win — but we always built something real.</p></div>
+      <div class="memory-card"><div class="memory-icon">🎉</div><h3>College Fests</h3><p>We rehearsed for 2 days and performed like we'd been doing it for years. The stage was ours.</p></div>
+      <div class="memory-card"><div class="memory-icon">☕</div><h3>3AM Chai</h3><p>Late night chai sessions that turned into 3am life conversations. The canteen — our real classroom.</p></div>
+      <div class="memory-card"><div class="memory-icon">🚀</div><h3>Placements</h3><p>The anxiety, the prep, the calls at midnight — "I got it!" Placement season was chaos and triumph all at once.</p></div>
+    </div>
+  </div>
+
+  <!-- ===== FAREWELL TAB ===== -->
+  <div class="tab-content" id="tab-farewell">
+    <div class="farewell-hero">
+      <img src="images/WhatsApp Image 2026-03-30 at 8.46.08 PM (1).jpeg" alt="Campus" class="farewell-bg-img" />
+      <div class="farewell-overlay-dark"></div>
+      <div class="farewell-text">
+        <p class="farewell-year">2022 — 2026 · CSE · Avanthi's</p>
+        <h2 class="farewell-quote">"We came as strangers,<br/>we leave as family."</h2>
+      </div>
+    </div>
+    <div class="farewell-message-box">
+      <p>To everyone who was part of this — thank you. For the late nights, the shared meals, the panic before exams, the celebrations after. For being there when it was hard and making it feel easy.</p>
+      <p style="margin-top:1rem">We didn't just study together. We grew up together. And no matter where life takes us next, this chapter will always be the one we look back on and smile.</p>
+      <p class="farewell-sign">— ASRA Batch of 2026 ❤️</p>
+    </div>
+  </div>
+
+</main>
+
+<!-- STUDENT MODAL -->
+<div id="studentModal" class="modal">
+  <div class="modal-overlay" id="modalOverlay"></div>
+  <div class="modal-box" id="modalBox"></div>
+</div>
+
+<!-- MEDIA LIGHTBOX -->
+<div id="mediaLightbox" class="modal">
+  <div class="modal-overlay" id="mediaLbOverlay"></div>
+  <div class="media-lb-box">
+    <button class="modal-close-btn" id="mediaLbClose">✕</button>
+    <button class="lb-nav lb-prev" id="mediaLbPrev">‹</button>
+    <div id="mediaLbContent"></div>
+    <button class="lb-nav lb-next" id="mediaLbNext">›</button>
+    <p class="lb-caption" id="mediaLbCaption"></p>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
