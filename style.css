@@ -68,6 +68,13 @@ input  { font-family: inherit; }
   object-position: center 30%;
   filter: brightness(0.4);
   display: block;
+  image-orientation: from-image;
+}
+.farewell-bg-img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  filter: brightness(0.3);
+  image-orientation: from-image;
 }
 .hero-overlay {
   position: absolute; inset: 0;
@@ -312,6 +319,7 @@ input  { font-family: inherit; }
 .gallery-tile img, .gallery-tile video {
   width: 100%; aspect-ratio: 4/3;
   object-fit: cover; display: block;
+  image-orientation: from-image;
 }
 .gallery-tile-caption {
   padding: 8px 10px;
