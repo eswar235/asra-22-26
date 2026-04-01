@@ -257,23 +257,36 @@ async function uploadToCloudinary(file) {
 // File picker buttons
 const fileInput = document.getElementById('fileInput');
 document.getElementById('uploadPhotoBtn').addEventListener('click', () => {
-  fileInput.accept = 'image/*'; fileInput.click();
+  fileInput.accept = 'image/*';
+  fileInput.removeAttribute('capture');
+  fileInput.click();
 });
 document.getElementById('uploadVideoBtn').addEventListener('click', () => {
-  fileInput.accept = 'video/*'; fileInput.click();
+  fileInput.accept = 'video/*';
+  fileInput.removeAttribute('capture');
+  fileInput.click();
 });
 fileInput.addEventListener('change', async () => {
   const file   = fileInput.files[0];
   const status = document.getElementById('firebaseGalleryStatus');
   if (!file) return;
+
+  // Warn if file is too large (>50MB)
+  if (file.size > 50 * 1024 * 1024) {
+    status.textContent = '❌ File too large. Please use a file under 50MB.';
+    fileInput.value = '';
+    return;
+  }
+
   try {
+    status.textContent = '⏳ Uploading...';
     const src     = await uploadToCloudinary(file);
     const caption = file.name.replace(/\.[^.]+$/, '');
     await push(galleryRef, { src, caption, ts: Date.now() });
     status.textContent = '✅ Shared! Everyone can see it now.';
     setTimeout(() => status.textContent = '', 3000);
-  } catch {
-    status.textContent = '❌ Upload failed. Try again.';
+  } catch (err) {
+    status.textContent = '❌ Upload failed: ' + (err.message || 'Try again');
   }
   fileInput.value = '';
 });
