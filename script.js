@@ -299,11 +299,14 @@ onValue(galleryRef, snapshot => {
   const data = snapshot.val();
   if (!data) { ge.style.display = 'flex'; return; }
   ge.style.display = 'none';
-  Object.entries(data).forEach(([key, item]) => {
+
+  const entries = Object.entries(data);
+  entries.forEach(([key, item]) => {
     const tile = document.createElement('div');
     tile.className = 'gallery-tile';
     const isYT  = item.src.startsWith('https://www.youtube.com/embed');
     const isVid = isVideo(item.src);
+
     if (isYT) {
       tile.innerHTML = `
         <div class="gallery-tile-yt"><iframe src="${item.src}" allowfullscreen loading="lazy"></iframe></div>
@@ -318,14 +321,20 @@ onValue(galleryRef, snapshot => {
           <span class="gallery-tile-caption">${item.caption || ''}</span>
           <button class="gallery-tile-del" title="Delete">🗑</button>
         </div>`;
+      tile.querySelector('video').addEventListener('click', () => openFirebaseLightbox(entries, key));
     } else {
       tile.innerHTML = `
-        <img src="${item.src}" alt="${item.caption || ''}" loading="lazy" style="cursor:pointer;width:100%;aspect-ratio:4/3;object-fit:cover;" />
+        <img src="${item.src}" alt="${item.caption || ''}" loading="lazy"
+          style="cursor:pointer;width:100%;aspect-ratio:4/3;object-fit:cover;"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+        <div style="display:none;align-items:center;justify-content:center;aspect-ratio:4/3;background:var(--surface2);color:var(--muted);font-size:12px;">⚠️ Image failed to load</div>
         <div class="gallery-tile-bar">
           <span class="gallery-tile-caption">${item.caption || ''}</span>
           <button class="gallery-tile-del" title="Delete">🗑</button>
         </div>`;
+      tile.querySelector('img').addEventListener('click', () => openFirebaseLightbox(entries, key));
     }
+
     tile.querySelector('.gallery-tile-del').addEventListener('click', e => {
       e.stopPropagation();
       if (confirm('Remove this from the shared gallery?')) remove(ref(db, `gallery/${key}`));
@@ -333,6 +342,26 @@ onValue(galleryRef, snapshot => {
     gg.appendChild(tile);
   });
 });
+
+// Lightbox for Firebase gallery items
+function openFirebaseLightbox(entries, currentKey) {
+  const nonYT = entries.filter(([, item]) => !item.src.startsWith('https://www.youtube.com/embed'));
+  let cur = nonYT.findIndex(([k]) => k === currentKey);
+  if (cur < 0) cur = 0;
+  const show = () => {
+    const [, item] = nonYT[cur];
+    const isVid = isVideo(item.src);
+    document.getElementById('mediaLbContent').innerHTML = isVid
+      ? `<video src="${item.src}" controls autoplay style="max-width:90vw;max-height:75vh;border-radius:10px;"></video>`
+      : `<img src="${item.src}" alt="${item.caption||''}" style="max-width:90vw;max-height:75vh;border-radius:10px;object-fit:contain;" />`;
+    document.getElementById('mediaLbCaption').textContent = item.caption || '';
+  };
+  show();
+  document.getElementById('mediaLbPrev').onclick = () => { cur = (cur - 1 + nonYT.length) % nonYT.length; show(); };
+  document.getElementById('mediaLbNext').onclick = () => { cur = (cur + 1) % nonYT.length; show(); };
+  mediaLightbox.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
 
 // YouTube URL submit
 const urlInputWrap = document.getElementById('urlInputWrap');
