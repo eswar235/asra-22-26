@@ -46,6 +46,7 @@
   <div class="tabs" id="tabs">
     <button class="tab active" data-tab="students">👨‍💻 Students</button>
     <button class="tab" data-tab="gallery">📸 Gallery</button>
+    <button class="tab" data-tab="chat">💬 Chat</button>
     <button class="tab" data-tab="memories">💫 Memories</button>
     <button class="tab" data-tab="farewell">❤️ Farewell</button>
   </div>
@@ -59,15 +60,12 @@
       </div>
       <div class="count-pill" id="countBadge">61 students</div>
     </div>
-
-    <!-- Search & Filter -->
     <div class="controls">
       <div class="search-wrap">
         <span class="search-icon">🔍</span>
         <input type="text" id="searchInput" placeholder="Search by name..." autocomplete="off" />
       </div>
     </div>
-
     <div class="students-grid" id="studentsGrid"></div>
     <div class="empty-state" id="noResults" style="display:none">
       <p style="font-size:2rem">🔍</p>
@@ -80,7 +78,7 @@
     <div class="section-header">
       <div>
         <h2 class="section-title">Our Gallery</h2>
-        <p class="section-sub">Batch photos + add your own memories</p>
+        <p class="section-sub">Shared photos — visible to everyone 🌍</p>
       </div>
     </div>
 
@@ -105,27 +103,54 @@
       </div>
     </div>
 
-    <!-- User Upload -->
-    <p class="subsection-label" style="margin-top:2rem">➕ Add Your Photos & Videos</p>
+    <!-- Shared Upload (Firebase) -->
+    <p class="subsection-label" style="margin-top:2rem">➕ Add Your Photos & Videos (shared with everyone)</p>
     <div class="upload-bar">
-      <button class="upload-btn" id="uploadPhotoBtn">📸 Photos</button>
-      <button class="upload-btn" id="uploadVideoBtn">🎬 Videos</button>
-      <button class="upload-btn" id="uploadUrlBtn">� YouTube / URL</button>
-      <input type="file" id="fileInput" accept="image/*,video/*" multiple hidden />
+      <button class="upload-btn" id="uploadUrlBtn">🔗 Add YouTube / Image URL</button>
     </div>
-
     <div class="url-row" id="urlInputWrap" style="display:none">
       <input type="text" id="urlInput" placeholder="Paste YouTube or image URL..." />
       <input type="text" id="urlCaption" placeholder="Caption (optional)" />
-      <button id="urlSubmit" class="upload-btn accent">Add</button>
+      <button id="urlSubmit" class="upload-btn accent">Share</button>
       <button id="urlCancel" class="upload-btn">Cancel</button>
     </div>
-
+    <div id="firebaseGalleryStatus" class="firebase-status"></div>
     <div class="gallery-grid" id="galleryGrid"></div>
     <div class="empty-state" id="galleryEmpty">
       <p style="font-size:2rem">🌟</p>
       <p>No uploads yet — be the first to share!</p>
     </div>
+  </div>
+
+  <!-- ===== CHAT TAB ===== -->
+  <div class="tab-content" id="tab-chat">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Class Chat 💬</h2>
+        <p class="section-sub">Share jokes, memories & messages — live for everyone</p>
+      </div>
+    </div>
+
+    <!-- Name picker -->
+    <div class="chat-name-bar" id="chatNameBar">
+      <span class="chat-name-label">Your name:</span>
+      <input type="text" id="chatNameInput" placeholder="Enter your name..." maxlength="30" />
+      <button id="chatNameSave" class="upload-btn accent">Set Name</button>
+    </div>
+    <div id="chatNameDisplay" class="chat-name-display" style="display:none">
+      <span id="chatNameShown"></span>
+      <button id="chatNameChange" class="upload-btn" style="padding:4px 10px;font-size:11px">Change</button>
+    </div>
+
+    <div class="chat-box" id="chatBox">
+      <div class="chat-loading" id="chatLoading">Loading messages...</div>
+    </div>
+
+    <div class="chat-input-row">
+      <input type="text" id="chatMsgInput" placeholder="Type a joke or message... 😄" maxlength="300" />
+      <button id="chatSendBtn" class="upload-btn accent">Send 🚀</button>
+    </div>
+    <div id="chatStatus" class="firebase-status"></div>
   </div>
 
   <!-- ===== MEMORIES TAB ===== -->
@@ -183,6 +208,7 @@
   </div>
 </div>
 
-<script src="script.js"></script>
+<!-- Firebase SDK -->
+<script type="module" src="script.js"></script>
 </body>
 </html>
