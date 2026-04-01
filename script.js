@@ -192,6 +192,12 @@ function openModal(s) {
 function closeModal() { modal.classList.remove('active'); document.body.style.overflow = ''; }
 
 // ============================================================
+// CLOUDINARY CONFIG
+// ============================================================
+const CLOUD_NAME    = 'dqgx7djig';
+const UPLOAD_PRESET = 'asra_upload';
+
+// ============================================================
 // FIREBASE GALLERY — shared across all devices
 // ============================================================
 const galleryRef = ref(db, 'gallery');
@@ -201,8 +207,76 @@ function ytEmbed(url) {
   return m ? `https://www.youtube.com/embed/${m[1]}` : null;
 }
 function isVideo(src) {
-  return src.startsWith('https://www.youtube.com/embed') || /\.(mp4|mov|webm|ogg)(\?|$)/i.test(src);
+  return src.startsWith('https://www.youtube.com/embed') || /\.(mp4|mov|webm|ogg)(\?|$)/i.test(src) || src.includes('video/upload');
 }
+
+// Upload file to Cloudinary then save URL to Firebase
+async function uploadToCloudinary(file) {
+  const status      = document.getElementById('firebaseGalleryStatus');
+  const progress    = document.getElementById('uploadProgress');
+  const progressBar = document.getElementById('uploadProgressBar');
+  const progressTxt = document.getElementById('uploadProgressText');
+
+  const isVid      = file.type.startsWith('video/');
+  const resourceType = isVid ? 'video' : 'image';
+  const url        = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${resourceType}/upload`;
+
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', UPLOAD_PRESET);
+
+  progress.style.display = 'flex';
+  progressBar.style.width = '0%';
+  progressTxt.textContent = 'Uploading...';
+  status.textContent = '';
+
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', url);
+    xhr.upload.onprogress = e => {
+      if (e.lengthComputable) {
+        const pct = Math.round((e.loaded / e.total) * 100);
+        progressBar.style.width = pct + '%';
+        progressTxt.textContent = `Uploading... ${pct}%`;
+      }
+    };
+    xhr.onload = () => {
+      progress.style.display = 'none';
+      if (xhr.status === 200) {
+        const res = JSON.parse(xhr.responseText);
+        resolve(res.secure_url);
+      } else {
+        reject(new Error('Upload failed'));
+      }
+    };
+    xhr.onerror = () => { progress.style.display = 'none'; reject(new Error('Network error')); };
+    xhr.send(formData);
+  });
+}
+
+// File picker buttons
+const fileInput = document.getElementById('fileInput');
+document.getElementById('uploadPhotoBtn').addEventListener('click', () => {
+  fileInput.accept = 'image/*'; fileInput.click();
+});
+document.getElementById('uploadVideoBtn').addEventListener('click', () => {
+  fileInput.accept = 'video/*'; fileInput.click();
+});
+fileInput.addEventListener('change', async () => {
+  const file   = fileInput.files[0];
+  const status = document.getElementById('firebaseGalleryStatus');
+  if (!file) return;
+  try {
+    const src     = await uploadToCloudinary(file);
+    const caption = file.name.replace(/\.[^.]+$/, '');
+    await push(galleryRef, { src, caption, ts: Date.now() });
+    status.textContent = '✅ Shared! Everyone can see it now.';
+    setTimeout(() => status.textContent = '', 3000);
+  } catch {
+    status.textContent = '❌ Upload failed. Try again.';
+  }
+  fileInput.value = '';
+});
 
 // Listen for real-time gallery updates
 onValue(galleryRef, snapshot => {
@@ -233,7 +307,7 @@ onValue(galleryRef, snapshot => {
         </div>`;
     } else {
       tile.innerHTML = `
-        <img src="${item.src}" alt="${item.caption || ''}" loading="lazy" style="cursor:pointer" />
+        <img src="${item.src}" alt="${item.caption || ''}" loading="lazy" style="cursor:pointer;width:100%;aspect-ratio:4/3;object-fit:cover;" />
         <div class="gallery-tile-bar">
           <span class="gallery-tile-caption">${item.caption || ''}</span>
           <button class="gallery-tile-del" title="Delete">🗑</button>
@@ -241,15 +315,13 @@ onValue(galleryRef, snapshot => {
     }
     tile.querySelector('.gallery-tile-del').addEventListener('click', e => {
       e.stopPropagation();
-      if (confirm('Remove this from the shared gallery?')) {
-        remove(ref(db, `gallery/${key}`));
-      }
+      if (confirm('Remove this from the shared gallery?')) remove(ref(db, `gallery/${key}`));
     });
     gg.appendChild(tile);
   });
 });
 
-// URL / YouTube submit
+// YouTube URL submit
 const urlInputWrap = document.getElementById('urlInputWrap');
 document.getElementById('uploadUrlBtn').addEventListener('click', () => {
   urlInputWrap.style.display = urlInputWrap.style.display === 'none' ? 'flex' : 'none';
@@ -259,14 +331,11 @@ document.getElementById('urlSubmit').addEventListener('click', () => {
   const raw     = document.getElementById('urlInput').value.trim();
   const caption = document.getElementById('urlCaption').value.trim();
   if (!raw) return;
-  const src = ytEmbed(raw) || raw;
+  const src    = ytEmbed(raw) || raw;
   const status = document.getElementById('firebaseGalleryStatus');
   push(galleryRef, { src, caption, ts: Date.now() })
-    .then(() => {
-      status.textContent = '✅ Shared! Everyone can see it now.';
-      setTimeout(() => status.textContent = '', 3000);
-    })
-    .catch(() => { status.textContent = '❌ Failed — check Firebase config.'; });
+    .then(() => { status.textContent = '✅ Shared!'; setTimeout(() => status.textContent = '', 3000); })
+    .catch(() => { status.textContent = '❌ Failed.'; });
   document.getElementById('urlInput').value   = '';
   document.getElementById('urlCaption').value = '';
   urlInputWrap.style.display = 'none';

@@ -576,3 +576,23 @@ input  { font-family: inherit; }
   .chat-bubble { max-width: 90%; }
   .chat-box { height: 300px; }
 }
+
+/* ===== UPLOAD PROGRESS ===== */
+.upload-progress {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 8px 16px;
+  max-width: 400px;
+}
+.upload-progress-bar {
+  height: 4px; border-radius: 2px;
+  background: var(--accent);
+  transition: width 0.2s ease;
+  flex: 1;
+}
+#uploadProgressText {
+  font-size: 12px; color: var(--muted); white-space: nowrap;
+}

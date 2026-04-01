@@ -103,13 +103,20 @@
       </div>
     </div>
 
-    <!-- Shared Upload (Firebase) -->
+    <!-- Shared Upload (Cloudinary + Firebase) -->
     <p class="subsection-label" style="margin-top:2rem">➕ Add Your Photos & Videos (shared with everyone)</p>
     <div class="upload-bar">
-      <button class="upload-btn" id="uploadUrlBtn">🔗 Add YouTube / Image URL</button>
+      <button class="upload-btn accent" id="uploadPhotoBtn">� Upload Photo</button>
+      <button class="upload-btn accent" id="uploadVideoBtn">🎬 Upload Video</button>
+      <button class="upload-btn" id="uploadUrlBtn">🔗 YouTube URL</button>
+    </div>
+    <input type="file" id="fileInput" hidden />
+    <div class="upload-progress" id="uploadProgress" style="display:none">
+      <div class="upload-progress-bar" id="uploadProgressBar"></div>
+      <span id="uploadProgressText">Uploading...</span>
     </div>
     <div class="url-row" id="urlInputWrap" style="display:none">
-      <input type="text" id="urlInput" placeholder="Paste YouTube or image URL..." />
+      <input type="text" id="urlInput" placeholder="Paste YouTube URL..." />
       <input type="text" id="urlCaption" placeholder="Caption (optional)" />
       <button id="urlSubmit" class="upload-btn accent">Share</button>
       <button id="urlCancel" class="upload-btn">Cancel</button>
