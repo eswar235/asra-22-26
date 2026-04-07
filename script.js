@@ -267,27 +267,30 @@ document.getElementById('uploadVideoBtn').addEventListener('click', () => {
   fileInput.click();
 });
 fileInput.addEventListener('change', async () => {
-  const file   = fileInput.files[0];
+  const files  = Array.from(fileInput.files);
   const status = document.getElementById('firebaseGalleryStatus');
-  if (!file) return;
-
-  // Warn if file is too large (>50MB)
-  if (file.size > 50 * 1024 * 1024) {
-    status.textContent = '❌ File too large. Please use a file under 50MB.';
+  if (!files.length) return;
+  const tooBig = files.find(f => f.size > 50 * 1024 * 1024);
+  if (tooBig) {
+    status.textContent = `File too large. Max 50MB per file.`;
     fileInput.value = '';
     return;
   }
-
-  try {
-    status.textContent = '⏳ Uploading...';
-    const src     = await uploadToCloudinary(file);
-    const caption = file.name.replace(/\.[^.]+$/, '');
-    await push(galleryRef, { src, caption, ts: Date.now() });
-    status.textContent = '✅ Shared! Everyone can see it now.';
-    setTimeout(() => status.textContent = '', 3000);
-  } catch (err) {
-    status.textContent = '❌ Upload failed: ' + (err.message || 'Try again');
+  status.textContent = `Uploading ${files.length} file(s)...`;
+  let done = 0;
+  for (const file of files) {
+    try {
+      const src = await uploadToCloudinary(file);
+      const caption = file.name.replace(/\.[^.]+$/, '');
+      await push(galleryRef, { src, caption, ts: Date.now() });
+      done++;
+      status.textContent = `Uploaded ${done}/${files.length}...`;
+    } catch (err) {
+      status.textContent = `Failed: ${err.message || 'Try again'}`;
+    }
   }
+  status.textContent = `${done} file(s) shared!`;
+  setTimeout(() => status.textContent = '', 4000);
   fileInput.value = '';
 });
 
@@ -502,3 +505,4 @@ function escapeHtml(str) {
 
 // expose for inline onclick
 window.openMemoryPhoto = openMemoryPhoto;
+
