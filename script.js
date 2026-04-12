@@ -83,7 +83,10 @@ const students = [
   { id: 58, name: "REDDYPALLI NIKHIL",             hallTicket: "22PT1A0560", phone: "9398215032", email: "reddypallinikhil@gmail.com" },
   { id: 59, name: "SALINA BEHRA",                  hallTicket: "22PT1A0561", phone: "7671290251", email: "salinabehra580@gmail.com" },
   { id: 60, name: "SELVA AKSHITHA",                hallTicket: "22PT1A0562", phone: "9059988271", email: "akshithaselva226@gmail.com" },
-  { id: 61, name: "SIKKAKOLLA SAIRAHUL",           hallTicket: "22PT1A0563", phone: "9346433895", email: "Rahulsikkakolla@gmail.com" }
+  { id: 61, name: "SIKKAKOLLA SAIRAHUL",           hallTicket: "22PT1A0563", phone: "9346433895", email: "Rahulsikkakolla@gmail.com" },
+  { id: 62, name: "ANDOL VARSHITHA",               hallTicket: "23PT5A0501", phone: "8885185767", email: "varshithaandol@gmail.com" },
+  { id: 63, name: "JAALA ANAND",                   hallTicket: "23PT5A0502", phone: "9553474071", email: "anandjaala@gmail.com" },
+  { id: 64, name: "GATTU PALLAVI",                 hallTicket: "23PT5A0503", phone: "9949509290", email: "gattupallavireddy@gmail.com" }
 ];
 
 const avatars = ['👨‍💻','👩‍💻','🧑‍💻','👨‍🎓','👩‍🎓','🧑‍🎓'];
