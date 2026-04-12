@@ -26,7 +26,7 @@ const students = [
   { id: 1,  name: "ABHISHEK AKASH SURAWAR",        hallTicket: "22PT1A0501", phone: "8406184061", email: "Surawarabhi@gmail.com" },
   { id: 2,  name: "AMBALLA VAMSHI",                hallTicket: "22PT1A0502", phone: "9573216722", email: "goudvamshi638@gmail.com" },
   { id: 3,  name: "ANGOTHU MANJULA",               hallTicket: "22PT1A0503", phone: "9391890913", email: "angothumanjula310@gmail.com" },
-  { id: 4,  name: "NAMBURI AKHIL SAI",             hallTicket: "22PT1A0504", phone: "8106198713", email: "namburiakhilsai@gmail.com" },
+  { id: 4,  name: "MAHENDAR",                       hallTicket: "22PT1A0504", phone: "9505179496", email: "" },
   { id: 5,  name: "ATIKAM YOGESHWAR GOUD",         hallTicket: "22PT1A0505", phone: "7386671925", email: "weaponalone@gmail.com" },
   { id: 6,  name: "B ANJANEYULU",                  hallTicket: "22PT1A0506", phone: "8688772983", email: "rowdyaj40@gmail.com" },
   { id: 7,  name: "BATTU SRIKANTH",                hallTicket: "22PT1A0507", phone: "7731862470", email: "Srikanthbattu664@gmail.com" },
